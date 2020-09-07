@@ -1,13 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import {
-  FiPower,
-  FiUser,
-  FiCalendar,
-  FiSlack,
-  FiUsers,
-  FiHome,
-} from 'react-icons/fi';
+import { FiPower, FiCalendar, FiSlack, FiUsers, FiHome } from 'react-icons/fi';
 
 import {
   Container,
@@ -61,14 +54,14 @@ const Header: React.FC = () => {
               </Link>
             </MenuItem>
 
-            {user.permission === 'Leader' && (
+            {user.permission === 'Master' || user.permission === 'Officer' ? (
               <MenuItem>
                 <FiUsers />
-                <Link to="/">
+                <Link to="/register">
                   <strong>Cadastro</strong>
                 </Link>
               </MenuItem>
-            )}
+            ) : null}
           </Menu>
 
           <button type="button" onClick={signOut}>

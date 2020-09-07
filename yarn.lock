@@ -9003,6 +9003,11 @@ react-error-overlay@^6.0.7:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.7.tgz#1dcfb459ab671d53f660a991513cb2f0a0553108"
   integrity sha512-TAv1KJFh3RhqxNvhzxj6LeT5NWklP6rDr2a0jaTfsZ5wSZWHOGeqQyejUp3xxLfPt2UpyJEcVQB/zyPcmonNFA==
 
+react-flippy@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/react-flippy/-/react-flippy-0.1.5.tgz#ba097fbd671ef315e7726dc26ea918e0b19be343"
+  integrity sha512-y0q9l33YQmASGY7ojcrlY0BzVsCYgThFjXjNL+4C19ws5vEpdKH+PyG5v9ZbLXq2kGArDO921FT7fhFSAX2SMQ==
+
 react-icons@^3.10.0:
   version "3.11.0"
   resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-3.11.0.tgz#2ca2903dfab8268ca18ebd8cc2e879921ec3b254"
