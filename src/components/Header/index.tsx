@@ -57,8 +57,8 @@ const Header: React.FC = () => {
             {user.permission === 'Master' || user.permission === 'Officer' ? (
               <MenuItem>
                 <FiUsers />
-                <Link to="/register">
-                  <strong>Cadastro</strong>
+                <Link to="/guild-members">
+                  <strong>Membros</strong>
                 </Link>
               </MenuItem>
             ) : null}
