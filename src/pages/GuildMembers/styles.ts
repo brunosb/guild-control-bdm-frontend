@@ -9,16 +9,46 @@ export const Content = styled.div`
   display: flex;
   justify-content: space-between;
   height: 100%;
+  width: 100%;
 `;
 
 export const Profile = styled.div`
   height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 20px;
+
+  h2 {
+    margin-bottom: 10px;
+  }
+`;
+
+export const ClasseIconAvatar = styled.div`
+  width: 130px;
+  height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  border: 2px solid #f4ede8;
+  border-radius: 50%;
+
+  img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    border-radius: 50%;
+  }
 `;
 
 export const Settings = styled.div`
   display: flex;
   justify-content: center;
   height: 100%;
+  width: 100%;
 
   .table-members {
     padding: 0 10px;

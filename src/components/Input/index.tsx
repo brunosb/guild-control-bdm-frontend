@@ -41,8 +41,16 @@ const Input: React.FC<InputProps> = ({
       name: fieldName,
       ref: inputRef.current,
       path: 'value',
+      setValue: (ref, value) => {
+        ref.value = value;
+        handleInputBlur();
+      },
+      clearValue: (ref) => {
+        ref.value = '';
+        handleInputBlur();
+      },
     });
-  }, [fieldName, registerField]);
+  }, [fieldName, registerField, handleInputBlur]);
 
   return (
     <Container

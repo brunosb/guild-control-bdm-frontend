@@ -17,82 +17,82 @@ import WarriorIcon from '../assets/classesIcon/gold/Warrior.png';
 import WitchIcon from '../assets/classesIcon/gold/Witch.png';
 import WizardIcon from '../assets/classesIcon/gold/Wizard.png';
 
-export function loadIconClass(classe: string): string | null {
-  const classesIcon = [
-    {
-      name: 'Archer',
-      icon: ArcherIcon,
-    },
-    {
-      name: 'Berserker',
-      icon: BerserkerIcon,
-    },
-    {
-      name: 'Dark Knight',
-      icon: DarkKnightIcon,
-    },
-    {
-      name: 'Kunoichi',
-      icon: KunoichiIcon,
-    },
-    {
-      name: 'Lahn',
-      icon: LahnIcon,
-    },
-    {
-      name: 'Maewha',
-      icon: MaewhaIcon,
-    },
-    {
-      name: 'Musa',
-      icon: MusaIcon,
-    },
-    {
-      name: 'Mystic',
-      icon: MysticIcon,
-    },
-    {
-      name: 'Ninja',
-      icon: NinjaIcon,
-    },
-    {
-      name: 'Ranger',
-      icon: RangerIcon,
-    },
-    {
-      name: 'Shai',
-      icon: ShaiIcon,
-    },
-    {
-      name: 'Sorceress',
-      icon: SorceressIcon,
-    },
-    {
-      name: 'Striker',
-      icon: StrikerIcon,
-    },
-    {
-      name: 'Tamer',
-      icon: TamerIcon,
-    },
-    {
-      name: 'Valkyrie',
-      icon: ValkyrieIcon,
-    },
-    {
-      name: 'Warrior',
-      icon: WarriorIcon,
-    },
-    {
-      name: 'Witch',
-      icon: WitchIcon,
-    },
-    {
-      name: 'Wizard',
-      icon: WizardIcon,
-    },
-  ];
+const classesIcon = [
+  {
+    name: 'Archer',
+    icon: ArcherIcon,
+  },
+  {
+    name: 'Berserker',
+    icon: BerserkerIcon,
+  },
+  {
+    name: 'Dark Knight',
+    icon: DarkKnightIcon,
+  },
+  {
+    name: 'Kunoichi',
+    icon: KunoichiIcon,
+  },
+  {
+    name: 'Lahn',
+    icon: LahnIcon,
+  },
+  {
+    name: 'Maewha',
+    icon: MaewhaIcon,
+  },
+  {
+    name: 'Musa',
+    icon: MusaIcon,
+  },
+  {
+    name: 'Mystic',
+    icon: MysticIcon,
+  },
+  {
+    name: 'Ninja',
+    icon: NinjaIcon,
+  },
+  {
+    name: 'Ranger',
+    icon: RangerIcon,
+  },
+  {
+    name: 'Shai',
+    icon: ShaiIcon,
+  },
+  {
+    name: 'Sorceress',
+    icon: SorceressIcon,
+  },
+  {
+    name: 'Striker',
+    icon: StrikerIcon,
+  },
+  {
+    name: 'Tamer',
+    icon: TamerIcon,
+  },
+  {
+    name: 'Valkyrie',
+    icon: ValkyrieIcon,
+  },
+  {
+    name: 'Warrior',
+    icon: WarriorIcon,
+  },
+  {
+    name: 'Witch',
+    icon: WitchIcon,
+  },
+  {
+    name: 'Wizard',
+    icon: WizardIcon,
+  },
+];
 
+export function loadIconClass(classe: string): string | null {
   const icon = classesIcon.find((classIcon) => classIcon.name === classe);
 
   if (!icon) {
@@ -100,4 +100,8 @@ export function loadIconClass(classe: string): string | null {
   }
 
   return icon.icon;
+}
+
+export function allClass(): string[] {
+  return classesIcon.map((classe) => classe.name);
 }
