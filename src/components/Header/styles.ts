@@ -15,6 +15,7 @@ export const HeaderContent = styled.div`
 
   > img {
     height: 80px;
+    border-radius: 50%;
   }
 
   button {
