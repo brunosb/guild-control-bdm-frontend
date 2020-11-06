@@ -31,6 +31,10 @@ const classesIcon = [
     icon: DarkKnightIcon,
   },
   {
+    name: 'Hashashin',
+    icon: null,
+  },
+  {
     name: 'Kunoichi',
     icon: KunoichiIcon,
   },

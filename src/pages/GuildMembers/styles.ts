@@ -1,23 +1,23 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  height: 100%;
+  height: 100vh;
 `;
 
 export const Content = styled.div`
   display: flex;
-  justify-content: space-between;
   height: 100%;
   width: 100%;
 `;
 
 export const Profile = styled.div`
-  height: 100%;
-  width: 100%;
+  width: 50vw;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   margin: 10px 20px;
 
@@ -44,14 +44,34 @@ export const ClasseIconAvatar = styled.div`
   }
 `;
 
+export const ContentForm = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const FormLine = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+
+  div {
+    margin: 0 0 0 5px;
+  }
+`;
+
 export const Settings = styled.div`
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
+  width: 50vw;
   height: 100%;
-  width: 100%;
 
   .table-members {
     padding: 0 10px;
+  }
+
+  .table-members .rdt_TableHeadRow {
+    border-bottom: 2px solid #ff9000;
   }
 
   .table-members .rdt_Table .rdt_TableBody {
@@ -59,7 +79,7 @@ export const Settings = styled.div`
     overflow-x: hidden;
   }
   .table-members .rdt_Table .rdt_TableBody::-webkit-scrollbar {
-    width: 0.7em;
+    width: 0.5em;
   }
   .table-members .rdt_Table .rdt_TableBody::-webkit-scrollbar-track {
     box-shadow: inset 0 0 6px rgba(35, 33, 41, 0.7);

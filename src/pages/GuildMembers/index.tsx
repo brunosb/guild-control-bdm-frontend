@@ -6,7 +6,6 @@ import React, {
   useState,
 } from 'react';
 import { Redirect } from 'react-router-dom';
-import sort from 'fast-sort';
 import * as Yup from 'yup';
 
 import DataTable, {
@@ -33,6 +32,8 @@ import {
   Container,
   Content,
   Profile,
+  ContentForm,
+  FormLine,
   Settings,
   ClasseIconAvatar,
 } from './styles';
@@ -44,18 +45,10 @@ import Input from '../../components/Input';
 import Select from '../../components/Select';
 import getValidationErrors from '../../utils/getValidationErrors';
 import { useToast } from '../../hooks/toast';
+import api from '../../services/api';
 
-interface Member {
-  id: string;
-  name: string;
-  whatsapp: string;
-  classe: string;
-  sub_class: string;
-  permission: 'Master' | 'Officer' | 'Player';
-  cp: number;
-  strike: number | null;
-  active: boolean;
-}
+import Member from '../../providers/models/IMemberProvider';
+import sortMembers from '../../utils/sortMembers';
 
 interface MemberFormData {
   name: string;
@@ -83,25 +76,18 @@ const GuildMembers: React.FC = () => {
     return { value: classe, label: classe };
   });
 
-  const { data } = useFetch<Member[]>('/users/list');
+  const { data } = useFetch<Member[]>({ url: '/users/list' });
+
+  function clearForm(): void {
+    formRef.current?.reset();
+    formRef.current?.setFieldValue('classe', 'default');
+    formRef.current?.setFieldValue('sub_class', 'default');
+    formRef.current?.setFieldValue('permission', 'default');
+  }
 
   useEffect(() => {
     if (data) {
-      sort(data).by([
-        { asc: 'permission' },
-        {
-          asc: 'name',
-          comparer: new Intl.Collator(undefined, {
-            numeric: true,
-            sensitivity: 'base',
-          }).compare,
-        },
-      ]);
-      data.sort((a, b) => {
-        const scoreA = a.active ? 1 : 0;
-        const scoreB = b.active ? 1 : 0;
-        return scoreB - scoreA;
-      });
+      sortMembers(data);
 
       setMembers([...data]);
     }
@@ -116,26 +102,76 @@ const GuildMembers: React.FC = () => {
         sub_class: playerSelect?.sub_class,
         permission: playerSelect?.permission,
         whatsapp: playerSelect?.whatsapp,
+        password: '',
       });
     } else {
-      formRef.current?.reset();
-      formRef.current?.setFieldValue('classe', 'default');
-      formRef.current?.setFieldValue('sub_class', 'default');
-      formRef.current?.setFieldValue('permission', 'default');
+      clearForm();
     }
   }, [playerSelect]);
 
-  const handleChangeActive = useCallback(async (id: string) => {
-    console.log(`change active id: ${id}`);
-  }, []);
+  const handleChangeActive = useCallback(
+    async (id: string) => {
+      const memberIndex = members.findIndex((member) => member.id === id);
 
-  const handleAddStrike = useCallback(async (id: string) => {
-    console.log(`clicou no add strike no player: ${id}`);
-  }, []);
+      try {
+        const memberResponse = await api.patch<Member>('/users/change-active', {
+          user_id: id,
+          active: !members[memberIndex].active,
+        });
 
-  const handleRemoveStrike = useCallback(async (id: string) => {
-    console.log(`clicou no remove strike no player: ${id}`);
-  }, []);
+        const member = memberResponse.data;
+        const updateMembers = members.slice();
+        updateMembers[memberIndex].active = member.active;
+        setMembers([...updateMembers]);
+
+        addToast({
+          type: 'success',
+          title: 'Membro atualizado!',
+          description: `Membro ${members[memberIndex].name} foi atualizado!.`,
+        });
+      } catch (error) {
+        addToast({
+          type: 'error',
+          title: `Membro ${members[memberIndex].name} não atualizado!`,
+          description: error.response.data.message,
+        });
+      }
+    },
+    [members, addToast],
+  );
+
+  const handleAddAndRemoveStrike = useCallback(
+    async (id: string, operation: string) => {
+      const memberIndex = members.findIndex((member) => member.id === id);
+      try {
+        const memberResponse = await api.patch<Member>(
+          '/users/add-remove-strike',
+          {
+            user_id: id,
+            operation,
+          },
+        );
+
+        const member = memberResponse.data;
+        const updateMembers = members.slice();
+        updateMembers[memberIndex].strike = member.strike;
+        setMembers([...updateMembers]);
+
+        addToast({
+          type: 'success',
+          title: 'Membro atualizado!',
+          description: `Membro ${members[memberIndex].name} foi atualizado!.`,
+        });
+      } catch (error) {
+        addToast({
+          type: 'error',
+          title: `Membro ${members[memberIndex].name} não atualizado!`,
+          description: error.response.data.message,
+        });
+      }
+    },
+    [members, addToast],
+  );
 
   const handleClickRowTable = useCallback(
     (member) => {
@@ -160,7 +196,6 @@ const GuildMembers: React.FC = () => {
 
   const handleSubmit = useCallback(
     async (formData: MemberFormData) => {
-      console.log(formData);
       try {
         formRef.current?.setErrors({});
 
@@ -184,9 +219,38 @@ const GuildMembers: React.FC = () => {
           abortEarly: false,
         });
 
+        let memberNewOrUpdated: Member;
+        if (playerSelect) {
+          memberNewOrUpdated = (
+            await api.put<Member>('/profile', {
+              id: playerSelect.id,
+              ...formData,
+            })
+          ).data;
+        } else {
+          memberNewOrUpdated = (await api.post<Member>('/users', formData))
+            .data;
+        }
+
+        if (memberNewOrUpdated) {
+          const indexMember = members.findIndex(
+            (member) => member.id === memberNewOrUpdated.id,
+          );
+          if (indexMember === -1) {
+            setMembers(sortMembers([...members, memberNewOrUpdated]));
+          } else {
+            members[indexMember] = memberNewOrUpdated;
+            setMembers(sortMembers([...members]));
+          }
+        }
+
+        setPlayerSelect(null);
+        setIconClasse(null);
+        clearForm();
+
         addToast({
           type: 'success',
-          title: 'Membro cadastrado/ atualizado!',
+          title: 'Membro cadastrado / atualizado!',
           description:
             'Informações do membro foram cadastrada/atualizada com sucesso.',
         });
@@ -199,13 +263,14 @@ const GuildMembers: React.FC = () => {
 
         addToast({
           type: 'error',
-          title: 'Erro ao salvar',
-          description:
-            'Ocorreu um erro ao salvar/atualizar membro, tente novamente.',
+          title: `Membro ${
+            playerSelect !== null ? playerSelect.name : ''
+          } não criado / atualizado!`,
+          description: err.response.data.message,
         });
       }
     },
-    [addToast],
+    [members, playerSelect, addToast],
   );
 
   createTheme('brasucas', {
@@ -260,6 +325,7 @@ const GuildMembers: React.FC = () => {
         cell: (row) => (
           <Toggle
             name={`active-${row.id}`}
+            className={`active-${row.id}`}
             checked={row.active}
             rightBackgroundColor="#312e38"
             leftBackgroundColor="#312e38"
@@ -287,14 +353,14 @@ const GuildMembers: React.FC = () => {
             >
               <Button
                 style={{ height: '16px', width: '16px', padding: 0, margin: 0 }}
-                onClick={() => handleRemoveStrike(row.id)}
+                onClick={() => handleAddAndRemoveStrike(row.id, 'remove')}
               >
                 <FiMinus />
               </Button>
               <span>{row.strike}</span>
               <Button
                 style={{ height: '16px', width: '16px', padding: 0, margin: 0 }}
-                onClick={() => handleAddStrike(row.id)}
+                onClick={() => handleAddAndRemoveStrike(row.id, 'add')}
               >
                 <FiPlus />
               </Button>
@@ -312,7 +378,7 @@ const GuildMembers: React.FC = () => {
         center: true,
       },
     ],
-    [handleAddStrike, handleRemoveStrike, handleChangeActive],
+    [handleAddAndRemoveStrike, handleChangeActive],
   );
 
   return leader ? (
@@ -326,56 +392,71 @@ const GuildMembers: React.FC = () => {
           </ClasseIconAvatar>
 
           <Form ref={formRef} onSubmit={handleSubmit}>
-            <Input name="name" type="text" icon={FiUser} placeholder="Nome" />
-            <Input
-              name="cp"
-              type="text"
-              icon={FiThermometer}
-              placeholder="10000"
-            />
-            <Select
-              placeholder="Classe"
-              onChange={handleClasseChange}
-              name="classe"
-              options={classesOptions}
-              icon={FiAnchor}
-            />
-            <Select
-              placeholder="Sub Classe"
-              name="sub_class"
-              options={[
-                { label: 'Awakening', value: 'Awakening' },
-                { label: 'Ascension', value: 'Ascension' },
-              ]}
-              icon={FiAperture}
-            />
-            {user.permission === 'Master' && (
-              <Select
-                placeholder="Cargo"
-                name="permission"
-                options={[
-                  { label: 'Master', value: 'Master' },
-                  { label: 'Officer', value: 'Officer' },
-                  { label: 'Player', value: 'Player' },
-                ]}
-                icon={FiAward}
-              />
-            )}
-            <Input
-              name="whatsapp"
-              type="text"
-              icon={FiPhone}
-              placeholder="(99) 99999-9999"
-            />
-            {playerSelect === null && (
-              <Input
-                name="password"
-                icon={FiLock}
-                placeholder="Senha"
-                type="password"
-              />
-            )}
-            <Button type="submit">Salvar</Button>
+            <ContentForm>
+              <FormLine>
+                <Input
+                  name="name"
+                  type="text"
+                  icon={FiUser}
+                  placeholder="Nome"
+                />
+                <Input
+                  name="cp"
+                  type="text"
+                  icon={FiThermometer}
+                  placeholder="10000"
+                />
+              </FormLine>
+              <FormLine>
+                <Select
+                  placeholder="Classe"
+                  onChange={handleClasseChange}
+                  name="classe"
+                  options={classesOptions}
+                  icon={FiAnchor}
+                />
+                <Select
+                  placeholder="Sub Classe"
+                  name="sub_class"
+                  options={[
+                    { label: 'Awakening', value: 'Awakening' },
+                    { label: 'Ascension', value: 'Ascension' },
+                  ]}
+                  icon={FiAperture}
+                />
+              </FormLine>
+              <FormLine>
+                <Select
+                  placeholder="Cargo"
+                  name="permission"
+                  options={[
+                    { label: 'Master', value: 'Master' },
+                    { label: 'Officer', value: 'Officer' },
+                    { label: 'Player', value: 'Player' },
+                  ]}
+                  icon={FiAward}
+                />
+                <Input
+                  name="whatsapp"
+                  type="text"
+                  icon={FiPhone}
+                  placeholder="(99) 99999-9999"
+                />
+              </FormLine>
+              <FormLine>
+                <Input
+                  name="password"
+                  icon={FiLock}
+                  placeholder="Senha"
+                  type="password"
+                />
+              </FormLine>
+              <FormLine>
+                <Button type="submit">
+                  {playerSelect === null ? 'Novo Membro' : 'Salvar'}
+                </Button>
+              </FormLine>
+            </ContentForm>
           </Form>
         </Profile>
         <Settings>

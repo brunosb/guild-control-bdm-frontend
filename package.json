@@ -20,6 +20,7 @@
     "@unform/web": "^2.1.0",
     "axios": "^0.20.0",
     "fast-sort": "^2.2.0",
+    "jsonwebtoken": "^8.5.1",
     "polished": "^3.5.2",
     "react": "^16.13.1",
     "react-data-table-component": "^6.11.3",
@@ -38,6 +39,7 @@
     "yup": "^0.28.4"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^8.5.0",
     "@types/react-router-dom": "^5.1.4",
     "@types/react-select": "^3.0.19",
     "@types/styled-components": "^5.1.0",

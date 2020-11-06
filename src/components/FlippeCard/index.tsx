@@ -14,17 +14,10 @@ import {
   GvGParticipation,
 } from './styles';
 
+import Member from '../../providers/models/IMemberProvider';
+
 interface Player {
-  player: {
-    name: string;
-    whatsapp: string;
-    classe: string;
-    sub_class: string;
-    permission: 'Master' | 'Officer' | 'Player';
-    cp: number;
-    active: boolean;
-    avatar_url: string;
-  };
+  player: Member;
 }
 
 const FlippeCard: React.FC<Player> = ({ player }) => {

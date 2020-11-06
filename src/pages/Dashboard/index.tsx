@@ -6,24 +6,20 @@ import { useFetch } from '../../hooks/useFetch';
 
 import { Container, Content, PlayersContent, TitleGuild } from './styles';
 
-interface Player {
-  id: string;
-  name: string;
-  whatsapp: string;
-  classe: string;
-  sub_class: string;
-  permission: 'Master' | 'Officer' | 'Player';
-  cp: number;
-  active: boolean;
-  avatar_url: string;
-}
+import Member from '../../providers/models/IMemberProvider';
+import sortMembers from '../../utils/sortMembers';
 
 const Dashboard: React.FC = () => {
-  const { data } = useFetch<Player[]>('/users/list');
+  const { data } = useFetch<Member[]>({
+    url: '/users/list',
+    params: {},
+  });
 
   if (!data) {
     return <h1>Carregando...</h1>;
   }
+
+  sortMembers(data);
 
   return (
     <Container>
@@ -33,9 +29,10 @@ const Dashboard: React.FC = () => {
           <h1>Brasucas</h1>
         </TitleGuild>
         <PlayersContent>
-          {data?.map((player) => (
-            <FlippeCard key={player.id} player={player} />
-          ))}
+          {data?.map(
+            (player) =>
+              player.active && <FlippeCard key={player.id} player={player} />,
+          )}
         </PlayersContent>
       </Content>
     </Container>

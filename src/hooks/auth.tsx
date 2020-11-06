@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useState, useContext } from 'react';
+import jwt from 'jsonwebtoken';
 import api from '../services/api';
 
 interface User {
@@ -23,6 +24,7 @@ interface AuthContextData {
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
   updateUser(user: User): void;
+  checkToken(): void;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -71,9 +73,24 @@ const AuthProvider: React.FC = ({ children }) => {
     [setData, data.token],
   );
 
+  const checkToken = useCallback(() => {
+    const token = localStorage.getItem('@Brasucas.token');
+    if (token) {
+      jwt.verify(
+        token,
+        process.env.REACT_APP_TOKEN_SECRET || 'default',
+        (err) => {
+          if (err) {
+            signOut();
+          }
+        },
+      );
+    }
+  }, [signOut]);
+
   return (
     <AuthContext.Provider
-      value={{ user: data.user, signIn, signOut, updateUser }}
+      value={{ user: data.user, signIn, signOut, updateUser, checkToken }}
     >
       {children}
     </AuthContext.Provider>
