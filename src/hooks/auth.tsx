@@ -1,17 +1,11 @@
 import React, { createContext, useCallback, useState, useContext } from 'react';
 import jwt from 'jsonwebtoken';
 import api from '../services/api';
-
-interface User {
-  id: string;
-  name: string;
-  permission: string;
-  avatar_url: string;
-}
+import Member from '../providers/models/IMemberProvider';
 
 interface AuthState {
   token: string;
-  user: User;
+  user: Member;
 }
 
 interface SignInCredentials {
@@ -20,10 +14,10 @@ interface SignInCredentials {
 }
 
 interface AuthContextData {
-  user: User;
+  user: Member;
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
-  updateUser(user: User): void;
+  updateUser(user: Member): void;
   checkToken(): void;
 }
 
@@ -46,6 +40,9 @@ const AuthProvider: React.FC = ({ children }) => {
     const response = await api.post('sessions', { name, password });
 
     const { token, user } = response.data;
+    delete user.avatar;
+    delete user.avatar_url;
+
     localStorage.setItem('@Brasucas.token', token);
     localStorage.setItem('@Brasucas.user', JSON.stringify(user));
 
@@ -62,7 +59,7 @@ const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   const updateUser = useCallback(
-    (user: User) => {
+    (user: Member) => {
       localStorage.setItem('@Brasucas.user', JSON.stringify(user));
 
       setData({

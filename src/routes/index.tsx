@@ -6,6 +6,7 @@ import Route from './Route';
 import SignIn from '../pages/Signin';
 import Dashboard from '../pages/Dashboard';
 import GuildMembers from '../pages/GuildMembers';
+import Profile from '../pages/Profile';
 
 const Routes: React.FC = () => (
   <Switch>
@@ -13,6 +14,7 @@ const Routes: React.FC = () => (
 
     <Route path="/dashboard" component={Dashboard} isPrivate />
     <Route path="/guild-members" component={GuildMembers} isPrivate />
+    <Route path="/profile" component={Profile} isPrivate />
   </Switch>
 );
 
