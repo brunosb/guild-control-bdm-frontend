@@ -75,10 +75,14 @@ export const MenuItem = styled.li`
 `;
 
 export const BurgerStyled = styled.div`
-  display: flex;
-  align-items: center;
+  display: none;
   cursor: pointer;
   z-index: 10;
+
+  @media (max-width: 768px) {
+    display: flex;
+    align-items: center;
+  }
 
   svg {
     width: 2rem;
