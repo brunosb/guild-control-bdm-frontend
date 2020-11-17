@@ -52,9 +52,16 @@ export const ContentForm = styled.div`
 export const FormLine = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 5px;
 
   div {
-    margin: 0 0 0 5px;
+    margin: 0 0 5px 5px;
+  }
+
+  @media (max-width: 700px) {
+    flex-direction: column;
+
+    div {
+      margin: 5px;
+    }
   }
 `;

@@ -1,21 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FiPower, FiCalendar, FiSlack, FiUsers, FiHome } from 'react-icons/fi';
 
-import {
-  Container,
-  HeaderContainer,
-  HeaderContent,
-  Profile,
-  Menu,
-  MenuItem,
-} from './styles';
+import { Container, HeaderContainer, HeaderContent, Profile } from './styles';
 
 import logoImg from '../../assets/logo.svg';
 import { useAuth } from '../../hooks/auth';
+import Navibar from '../Navibar';
 
 const Header: React.FC = () => {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
 
   return (
     <Container>
@@ -34,39 +27,7 @@ const Header: React.FC = () => {
             </div>
           </Profile>
 
-          <Menu>
-            <MenuItem>
-              <FiHome />
-              <Link to="/dashboard">
-                <strong>Home</strong>
-              </Link>
-            </MenuItem>
-            <MenuItem>
-              <FiCalendar />
-              <Link to="/calendar-week">
-                <strong>Calendário Semanal</strong>
-              </Link>
-            </MenuItem>
-            <MenuItem>
-              <FiSlack />
-              <Link to="/events">
-                <strong>Eventos</strong>
-              </Link>
-            </MenuItem>
-
-            {user.permission === 'Master' || user.permission === 'Officer' ? (
-              <MenuItem>
-                <FiUsers />
-                <Link to="/guild-members">
-                  <strong>Membros</strong>
-                </Link>
-              </MenuItem>
-            ) : null}
-          </Menu>
-
-          <button type="button" onClick={signOut}>
-            <FiPower />
-          </button>
+          <Navibar />
         </HeaderContent>
       </HeaderContainer>
     </Container>
