@@ -1,6 +1,8 @@
 import ArcherIcon from '../assets/classesIcon/gold/Archer.png';
 import BerserkerIcon from '../assets/classesIcon/gold/Berserker.png';
 import DarkKnightIcon from '../assets/classesIcon/gold/Dark Knight.png';
+import GuardianIcon from '../assets/classesIcon/gold/Guardian.png';
+import HashashinIcon from '../assets/classesIcon/gold/Hashashin.png';
 import KunoichiIcon from '../assets/classesIcon/gold/Kunoichi.png';
 import LahnIcon from '../assets/classesIcon/gold/Lahn.png';
 import MaewhaIcon from '../assets/classesIcon/gold/Maewha.png';
@@ -31,8 +33,12 @@ const classesIcon = [
     icon: DarkKnightIcon,
   },
   {
+    name: 'Guardian',
+    icon: GuardianIcon,
+  },
+  {
     name: 'Hashashin',
-    icon: null,
+    icon: HashashinIcon,
   },
   {
     name: 'Kunoichi',
