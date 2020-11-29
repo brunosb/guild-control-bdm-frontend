@@ -3,7 +3,6 @@ import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import { useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
-import { mask, unMask } from 'remask';
 
 import {
   FiUser,
@@ -47,37 +46,23 @@ const Profile: React.FC = () => {
     return { value: classe, label: classe };
   });
 
-  const maskWhatsapp = [
-    '(99) 9999-9999',
-    '(99) 9 9999-9999',
-    '+99 (99) 9999-9999',
-    '+99 (99) 9 9999-9999',
-  ];
-
   useEffect(() => {
     if (user) {
       setIconClasse(loadIconClass(user.classe));
       formRef.current?.setData({
-        name: user?.name,
-        cp: user?.cp,
-        classe: user?.classe,
-        sub_class: user?.sub_class,
-        whatsapp: mask(user?.whatsapp, maskWhatsapp),
+        name: user.name,
+        cp: user.cp,
+        classe: user.classe,
+        sub_class: user.sub_class,
+        whatsapp: user.whatsapp,
         password: '',
       });
     }
-  }, [user, maskWhatsapp]);
+  }, [user]);
 
   const handleClasseChange = useCallback((event) => {
     setIconClasse(loadIconClass(event.target.value));
   }, []);
-
-  const handleOnChangeWhatsappField = useCallback(() => {
-    formRef.current?.setFieldValue(
-      'whatsapp',
-      mask(unMask(formRef.current?.getFieldValue('whatsapp')), maskWhatsapp),
-    );
-  }, [maskWhatsapp]);
 
   const handleSubmit = useCallback(
     async (formData: Member) => {
@@ -104,7 +89,6 @@ const Profile: React.FC = () => {
         });
 
         formData.name = formData.name.trim();
-        formData.whatsapp = unMask(formData.whatsapp);
 
         const { id, permission } = user;
         const userForm = {
@@ -193,8 +177,7 @@ const Profile: React.FC = () => {
                   name="whatsapp"
                   type="text"
                   icon={FiPhone}
-                  placeholder="(99) 9 9999-9999"
-                  onChange={handleOnChangeWhatsappField}
+                  placeholder="99999999999"
                 />
               </FormLine>
               <FormLine>
