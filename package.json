@@ -32,10 +32,12 @@
     "react-select": "^3.1.0",
     "react-spring": "^8.0.27",
     "react-toggle-component": "^3.0.8",
+    "remask": "^0.1.0-alpha.5",
     "styled-components": "^5.1.0",
     "swr": "^0.3.2",
     "typescript": "~3.7.2",
     "uuidv4": "^6.0.7",
+    "vanilla-masker": "^1.2.0",
     "yup": "^0.28.4"
   },
   "devDependencies": {

@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { Redirect } from 'react-router-dom';
 import * as Yup from 'yup';
+import { mask, unMask } from 'remask';
 
 import DataTable, {
   IDataTableColumn,
@@ -76,6 +77,13 @@ const GuildMembers: React.FC = () => {
     return { value: classe, label: classe };
   });
 
+  const maskWhatsapp = [
+    '(99) 9999-9999',
+    '(99) 9 9999-9999',
+    '+99 (99) 9999-9999',
+    '+99 (99) 9 9999-9999',
+  ];
+
   const { data } = useFetch<Member[]>({ url: '/users/list' });
 
   function clearForm(): void {
@@ -101,13 +109,20 @@ const GuildMembers: React.FC = () => {
         classe: playerSelect?.classe,
         sub_class: playerSelect?.sub_class,
         permission: playerSelect?.permission,
-        whatsapp: playerSelect?.whatsapp,
+        whatsapp: mask(playerSelect?.whatsapp, maskWhatsapp),
         password: '',
       });
     } else {
       clearForm();
     }
-  }, [playerSelect]);
+  }, [playerSelect, maskWhatsapp]);
+
+  const handleOnChangeWhatsappField = useCallback(() => {
+    formRef.current?.setFieldValue(
+      'whatsapp',
+      mask(unMask(formRef.current?.getFieldValue('whatsapp')), maskWhatsapp),
+    );
+  }, [maskWhatsapp]);
 
   const handleChangeActive = useCallback(
     async (id: string) => {
@@ -218,6 +233,9 @@ const GuildMembers: React.FC = () => {
         await schema.validate(formData, {
           abortEarly: false,
         });
+
+        formData.name = formData.name.trim();
+        formData.whatsapp = unMask(formData.whatsapp);
 
         let memberNewOrUpdated: Member;
         if (playerSelect) {
@@ -440,7 +458,8 @@ const GuildMembers: React.FC = () => {
                   name="whatsapp"
                   type="text"
                   icon={FiPhone}
-                  placeholder="(99) 99999-9999"
+                  placeholder="(99) 9 9999-9999"
+                  onChange={handleOnChangeWhatsappField}
                 />
               </FormLine>
               <FormLine>

@@ -3,6 +3,7 @@ import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import { useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
+import { mask, unMask } from 'remask';
 
 import {
   FiUser,
@@ -46,6 +47,13 @@ const Profile: React.FC = () => {
     return { value: classe, label: classe };
   });
 
+  const maskWhatsapp = [
+    '(99) 9999-9999',
+    '(99) 9 9999-9999',
+    '+99 (99) 9999-9999',
+    '+99 (99) 9 9999-9999',
+  ];
+
   useEffect(() => {
     if (user) {
       setIconClasse(loadIconClass(user.classe));
@@ -54,15 +62,22 @@ const Profile: React.FC = () => {
         cp: user?.cp,
         classe: user?.classe,
         sub_class: user?.sub_class,
-        whatsapp: user?.whatsapp,
+        whatsapp: mask(user?.whatsapp, maskWhatsapp),
         password: '',
       });
     }
-  }, [user]);
+  }, [user, maskWhatsapp]);
 
   const handleClasseChange = useCallback((event) => {
     setIconClasse(loadIconClass(event.target.value));
   }, []);
+
+  const handleOnChangeWhatsappField = useCallback(() => {
+    formRef.current?.setFieldValue(
+      'whatsapp',
+      mask(unMask(formRef.current?.getFieldValue('whatsapp')), maskWhatsapp),
+    );
+  }, [maskWhatsapp]);
 
   const handleSubmit = useCallback(
     async (formData: Member) => {
@@ -88,14 +103,12 @@ const Profile: React.FC = () => {
           abortEarly: false,
         });
 
-        const { id, name, whatsapp, cp, classe, sub_class, permission } = user;
+        formData.name = formData.name.trim();
+        formData.whatsapp = unMask(formData.whatsapp);
+
+        const { id, permission } = user;
         const userForm = {
           id,
-          name,
-          whatsapp,
-          cp,
-          classe,
-          sub_class,
           permission,
           ...formData,
         };
@@ -180,7 +193,8 @@ const Profile: React.FC = () => {
                   name="whatsapp"
                   type="text"
                   icon={FiPhone}
-                  placeholder="(99) 99999-9999"
+                  placeholder="(99) 9 9999-9999"
+                  onChange={handleOnChangeWhatsappField}
                 />
               </FormLine>
               <FormLine>
