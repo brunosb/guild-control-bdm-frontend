@@ -9,6 +9,7 @@ import MaewhaIcon from '../assets/classesIcon/gold/Maewha.png';
 import MusaIcon from '../assets/classesIcon/gold/Musa.png';
 import MysticIcon from '../assets/classesIcon/gold/Mystic.png';
 import NinjaIcon from '../assets/classesIcon/gold/Ninja.png';
+import NovaIcon from '../assets/classesIcon/gold/Nova.png';
 import RangerIcon from '../assets/classesIcon/gold/Ranger.png';
 import ShaiIcon from '../assets/classesIcon/gold/Shai.png';
 import SorceressIcon from '../assets/classesIcon/gold/Sorceress.png';
@@ -63,6 +64,10 @@ const classesIcon = [
   {
     name: 'Ninja',
     icon: NinjaIcon,
+  },
+  {
+    name: 'Nova',
+    icon: NovaIcon,
   },
   {
     name: 'Ranger',
