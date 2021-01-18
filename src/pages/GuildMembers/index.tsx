@@ -49,6 +49,7 @@ import api from '../../services/api';
 
 import Member from '../../providers/models/IMemberProvider';
 import sortMembers from '../../utils/sortMembers';
+import InputSearch from '../../components/InputSearch';
 
 interface MemberFormData {
   name: string;
@@ -67,6 +68,11 @@ const GuildMembers: React.FC = () => {
   const [playerSelect, setPlayerSelect] = useState<Member | null>(null);
   const [iconClasse, setIconClasse] = useState<string | null>(null);
 
+  const [filterMembers, setFilterMembers] = useState<string>('');
+  const [resetPaginationToggle, setResetPaginationToggle] = useState<boolean>(
+    false,
+  );
+
   const { user } = useAuth();
   const leader = user.permission === 'Master' || user.permission === 'Officer';
   const { addToast } = useToast();
@@ -75,6 +81,13 @@ const GuildMembers: React.FC = () => {
   const classesOptions = allClasses.map((classe) => {
     return { value: classe, label: classe };
   });
+
+  const filteredMembers = members.filter(
+    (member) =>
+      member.name.toLowerCase().includes(filterMembers.toLowerCase()) ||
+      member.classe.toLowerCase().includes(filterMembers.toLowerCase()) ||
+      member.whatsapp.toString().includes(filterMembers),
+  );
 
   const { data } = useFetch<Member[]>({ url: '/users/list' });
 
@@ -304,6 +317,11 @@ const GuildMembers: React.FC = () => {
         omit: true,
       },
       {
+        name: 'Whatsapp',
+        selector: 'whatsapp',
+        omit: true,
+      },
+      {
         name: 'Nome',
         selector: 'name',
         sortable: true,
@@ -382,6 +400,23 @@ const GuildMembers: React.FC = () => {
     ],
     [handleAddAndRemoveStrike, handleChangeActive],
   );
+
+  const filterTable = useMemo(() => {
+    const handleClear = (): void => {
+      if (filterMembers) {
+        setResetPaginationToggle(!resetPaginationToggle);
+        setFilterMembers('');
+      }
+    };
+    return (
+      <InputSearch
+        placeholder="Filtrar por Nome ou Classe ou Número"
+        value={filterMembers}
+        changeValue={(e) => setFilterMembers(e.target.value)}
+        clearValue={handleClear}
+      />
+    );
+  }, [filterMembers, resetPaginationToggle]);
 
   return leader ? (
     <Container>
@@ -465,12 +500,16 @@ const GuildMembers: React.FC = () => {
           <DataTable
             className="table-members"
             title="Membros da Guild"
-            data={members}
+            data={filteredMembers}
             columns={tableColumns}
             fixedHeader
             highlightOnHover
             theme="brasucas"
             onRowClicked={handleClickRowTable}
+            pagination
+            paginationResetDefaultPage={resetPaginationToggle}
+            subHeader
+            subHeaderComponent={filterTable}
           />
         </Settings>
       </Content>
