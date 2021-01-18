@@ -70,6 +70,10 @@ export const Settings = styled.div`
     padding: 0 10px;
   }
 
+  .table-members header {
+    padding: 0;
+  }
+
   .table-members .rdt_TableHeadRow {
     border-bottom: 2px solid #ff9000;
   }
